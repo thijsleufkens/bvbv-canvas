@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "project": "Voorbeeldproject",
+    "user_1": "Primaire gebruiker — rol & aantal",
+    "date_1": "JJJJ-MM-DD",
+    "user_2": "Wie kijkt mee · besluitvormers",
+    "date_2": "JJJJ-MM-DD",
+    "owner": "Eigenaar(s) · datapartner",
+    "date_3": "JJJJ-MM-DD"
+  },
+  "settings": {
+    "tall_sheets": false
+  },
+  "boxes": {
+    "rhythm": {
+      "html": [
+        "<p><strong>Dagelijks:</strong> wat doet de gebruiker nu, hoe vaak?</p>",
+        "<p><strong>Wekelijks / maandelijks:</strong> welk ritme staat al vast?</p>",
+        "<p><strong>Wat wordt nu gebruikt:</strong> tools, exports, spreadsheets, ad-hoc.</p>"
+      ],
+      "checks": []
+    },
+    "userstory": {
+      "html": [
+        "<p><em>\"Wanneer ik …, wil ik … zodat …\"</em></p>",
+        "<p><strong>Succes:</strong></p>",
+        "<ul><li>Concreet meetbaar resultaat 1</li><li>Concreet meetbaar resultaat 2</li></ul>"
+      ],
+      "checks": []
+    },
+    "mens_zelf": {
+      "html": [
+        "<p>Wie is de primaire gebruiker zelf? Skill-niveau, tools waarmee ze al werken, taal/jargon.</p>"
+      ]
+    },
+    "mens_coll": {
+      "html": [
+        "<p>Met wie deelt of bespreekt de gebruiker dit? Manager, peers, klanten — en in welke setting?</p>"
+      ]
+    },
+    "proces": {
+      "html": [
+        "<p>Welk proces of beslissing ondersteunt dit? Waar in de week/maand komt het terug?</p>"
+      ]
+    },
+    "vragen": {
+      "html": [
+        "<p>Welke (verborgen) vragen probeert de gebruiker te beantwoorden? Schrijf ze als zinnen, niet als KPI's.</p>"
+      ]
+    },
+    "h1": {
+      "html": [
+        "<p><strong>Wat hebben we al?</strong> Bestaande systemen, datamodellen, capaciteit.</p>"
+      ]
+    },
+    "h2": {
+      "html": [
+        "<p><strong>Welke data is nodig?</strong> Bronnen, kwaliteit, frequentie, eigenaar.</p>"
+      ]
+    },
+    "h3": {
+      "html": [
+        "<p><strong>Welke regels/logica?</strong> Definities, business rules, edge cases.</p>"
+      ]
+    },
+    "h4": {
+      "html": [
+        "<p><strong>Hoe meten we succes?</strong> Sluit aan op de criteria uit fase Vertaal.</p>"
+      ]
+    },
+    "vorm": {
+      "html": [
+        "<p>Beschrijf de gekozen vorm in één zin — waarom past die bij déze gebruiker?</p>"
+      ],
+      "tags": {}
+    },
+    "medium": {
+      "html": [
+        "<p>Waar komt het beschikbaar? Standaard rapportageplek of aparte plek — en waarom?</p>"
+      ],
+      "tags": {}
+    },
+    "borg": {
+      "html": [
+        "<p>Wie is eigenaar? Hoe landt het in het werkritme? Demo, training, documentatie, onderhoud, feedback.</p>"
+      ],
+      "checks": []
+    }
+  },
+  "qai": [
+    {
+      "q": "Voorbeeldvraag — wat moet de gebruiker concreet kunnen?",
+      "a": "Voorbeeldantwoord — vertaling naar metric/dimensie/visualisatie.",
+      "i": "Inzicht — wat valt op? Aanname die we moeten valideren?",
+      "warn": false
+    }
+  ],
+  "actions": {
+    "show": false,
+    "title": "Concreet — wat valideren we volgende sessie?",
+    "questions": [],
+    "materials": [],
+    "decisions": []
+  }
+}

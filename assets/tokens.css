@@ -1,0 +1,213 @@
+/* =========================================================
+   Datawijs met Thijs — Design Tokens
+   Colors & Typography
+   ========================================================= */
+
+/* Roboto is loaded via Google Fonts — see preview/*.html and
+   SKILL.md for the exact <link> tag. */
+
+:root {
+  /* ---------- Brand palette ---------- */
+  --dmt-amber:      #F2B969;  /* primary accent — the "taart" slice */
+  --dmt-ink:        #1D0C0C;  /* near-black — text, marks, icons   */
+  --dmt-cream:      #FDF8F0;  /* warm page background              */
+  --dmt-slate:      #727272;  /* secondary text, meta, labels      */
+  --dmt-white:      #FFFFFF;  /* pure white — cards on cream       */
+
+  /* ---------- Derived amber scale (for charts + hover states) ---------- */
+  /* Hand-tuned from --dmt-amber — warm, never muddy.              */
+  --dmt-amber-50:   #FBEBC9;
+  --dmt-amber-100:  #F8DDA8;
+  --dmt-amber-200:  #F5CD87;
+  --dmt-amber-300:  #F2B969;  /* === --dmt-amber (brand)          */
+  --dmt-amber-400:  #E5A34B;
+  --dmt-amber-500:  #C98634;
+  --dmt-amber-600:  #9E6621;
+  --dmt-amber-700:  #6E4614;
+
+  /* ---------- Derived ink scale (for subtle surfaces) ---------- */
+  --dmt-ink-900:    #1D0C0C;
+  --dmt-ink-700:    #3A2726;
+  --dmt-ink-500:    #727272;  /* === --dmt-slate                   */
+  --dmt-ink-300:    #B8B0AC;
+  --dmt-ink-100:    #E8E1D8;
+  --dmt-ink-50:     #F3ECE0;  /* darker cream — section dividers   */
+
+  /* ---------- Semantic surfaces ---------- */
+  --bg-page:        var(--dmt-cream);
+  --bg-card:        var(--dmt-white);
+  --bg-inverse:     var(--dmt-ink);
+  --bg-accent:      var(--dmt-amber);
+  --bg-subtle:      var(--dmt-ink-50);
+
+  /* ---------- Semantic foreground ---------- */
+  --fg-1:           var(--dmt-ink);        /* primary text          */
+  --fg-2:           var(--dmt-slate);      /* secondary text, meta  */
+  --fg-3:           var(--dmt-ink-300);    /* disabled / captions   */
+  --fg-on-accent:   var(--dmt-ink);        /* text on amber         */
+  --fg-on-inverse:  var(--dmt-cream);      /* text on ink           */
+  --fg-link:        var(--dmt-ink);
+  --fg-link-hover:  var(--dmt-amber-500);
+
+  /* ---------- Borders ---------- */
+  --border-subtle:  #EDE4D3;
+  --border-default: #DCD1BC;
+  --border-strong:  var(--dmt-ink);
+
+  /* ---------- Signals (derived — warm to match palette) ---------- */
+  --signal-positive: #3F7D4E;   /* muted green, Finn-leaf tone      */
+  --signal-warning:  #C98634;   /* amber-500                        */
+  --signal-negative: #A2382B;   /* terracotta-red, warm             */
+  --signal-info:     #3A6B85;   /* muted steel-blue                 */
+
+  /* ---------- Typography ---------- */
+  --font-sans:  'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:  'Roboto Mono', ui-monospace, Menlo, Consolas, monospace;
+
+  /* Type scale — conversational, generous, Kadence-inspired      */
+  --fs-display:   64px;   /* hero headlines                         */
+  --fs-h1:        48px;   /* page H1                                */
+  --fs-h2:        36px;   /* section H2                             */
+  --fs-h3:        26px;
+  --fs-h4:        20px;
+  --fs-lead:      20px;   /* lead paragraph under H1                */
+  --fs-body:      17px;   /* default body — slightly larger, warm   */
+  --fs-small:     15px;
+  --fs-micro:     13px;
+  --fs-label:     12px;   /* uppercase labels, tracked              */
+
+  --lh-tight:     1.15;
+  --lh-snug:      1.3;
+  --lh-body:      1.65;   /* comfortable reading                    */
+  --lh-loose:     1.8;
+
+  --fw-regular:   400;
+  --fw-medium:    500;
+  --fw-bold:      700;
+  --fw-black:     900;
+
+  --tracking-tight:  -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.08em;   /* eyebrow labels                    */
+
+  /* ---------- Spacing scale (4px base) ---------- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+  --space-10: 128px;
+
+  /* ---------- Radii — modest, warm ---------- */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   20px;
+  --radius-pill: 999px;
+
+  /* ---------- Elevation — soft, never crispy ---------- */
+  --shadow-sm:  0 1px 2px rgba(29, 12, 12, 0.06);
+  --shadow-md:  0 4px 12px rgba(29, 12, 12, 0.08);
+  --shadow-lg:  0 12px 32px rgba(29, 12, 12, 0.10);
+  --shadow-xl:  0 24px 60px rgba(29, 12, 12, 0.14);
+
+  /* ---------- Motion ---------- */
+  --ease-out:   cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-in-out:cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast:   120ms;
+  --dur-base:   200ms;
+  --dur-slow:   320ms;
+
+  /* ---------- Max widths ---------- */
+  --measure:     66ch;      /* body copy                             */
+  --container:   1200px;    /* marketing page gutter                 */
+}
+
+/* =========================================================
+   Semantic element styles — import & use directly.
+   ========================================================= */
+
+.dmt-body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--fg-1);
+  background: var(--bg-page);
+  font-weight: var(--fw-regular);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.dmt-display,
+h1.dmt, .dmt h1 {
+  font-family: var(--font-sans);
+  font-size: var(--fs-display);
+  line-height: var(--lh-tight);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-1);
+  margin: 0 0 var(--space-5);
+}
+
+.dmt-h1 { font-size: var(--fs-h1); line-height: var(--lh-tight); font-weight: var(--fw-bold); letter-spacing: var(--tracking-tight); color: var(--fg-1); margin: 0 0 var(--space-5); }
+.dmt-h2 { font-size: var(--fs-h2); line-height: var(--lh-snug); font-weight: var(--fw-bold); letter-spacing: var(--tracking-tight); color: var(--fg-1); margin: 0 0 var(--space-4); }
+.dmt-h3 { font-size: var(--fs-h3); line-height: var(--lh-snug); font-weight: var(--fw-bold); color: var(--fg-1); margin: 0 0 var(--space-3); }
+.dmt-h4 { font-size: var(--fs-h4); line-height: var(--lh-snug); font-weight: var(--fw-medium); color: var(--fg-1); margin: 0 0 var(--space-3); }
+
+.dmt-lead {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-body);
+  color: var(--fg-2);
+  font-weight: var(--fw-regular);
+  max-width: var(--measure);
+}
+
+.dmt-p {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--fg-1);
+  max-width: var(--measure);
+  margin: 0 0 var(--space-4);
+}
+
+.dmt-small { font-size: var(--fs-small); line-height: var(--lh-body); color: var(--fg-2); }
+.dmt-micro { font-size: var(--fs-micro); line-height: 1.5;          color: var(--fg-2); }
+
+/* Eyebrow label — uppercase, tracked — used above section headers */
+.dmt-eyebrow {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--dmt-amber-500);
+}
+
+/* Numerals for stuurinformatie / dashboards */
+.dmt-num {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-tight);
+}
+
+.dmt-code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  background: var(--bg-subtle);
+  padding: 0.1em 0.4em;
+  border-radius: var(--radius-sm);
+}
+
+/* Link */
+.dmt-a, .dmt a {
+  color: var(--fg-link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.dmt-a:hover, .dmt a:hover { color: var(--fg-link-hover); }

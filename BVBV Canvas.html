@@ -1,0 +1,830 @@
+<!DOCTYPE html><html lang="nl"><head>
+
+<meta charset="UTF-8">
+<title>BVBV Canvas — Datawijs met Thijs</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo-full.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;family=Roboto+Mono:wght@400;500&amp;family=Caveat:wght@400;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: #E9DFCC;
+    color: var(--fg-1);
+    font-size: 14px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    padding: 32px 0;
+  }
+
+  /* Schaal het canvas mee met grote schermen — print blijft echte mm.
+     297mm ≈ 1123 CSS px; we trekken 64px af voor padding/scrollbar en
+     cappen op 2.4× zodat fonts ook op 4K leesbaar blijven zonder ze poster-groot
+     te maken. */
+  @media screen {
+    body { zoom: clamp(1, calc((100vw - 64px) / 1180px), 2.4); }
+  }
+
+  /* ---------- Toolbar (screen only) ---------- */
+  .toolbar {
+    max-width: 297mm;
+    margin: 0 auto 16px;
+    padding: 8px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: 999px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--fg-2);
+    box-shadow: 0 2px 8px rgba(29,12,12,0.06);
+  }
+  .toolbar .label {
+    margin-right: 6px;
+    color: var(--dmt-amber-700);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+  .toolbar button, .toolbar .btn-file {
+    font-family: inherit;
+    font-size: 12px;
+    padding: 5px 12px;
+    border: 1px solid var(--dmt-ink);
+    background: var(--bg-card);
+    color: var(--dmt-ink);
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .toolbar button:hover, .toolbar .btn-file:hover {
+    background: var(--dmt-amber-50);
+  }
+  .toolbar .btn-file {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  .toolbar .btn-file input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  }
+  .toolbar .spacer { flex: 1; }
+  .toolbar .hint {
+    font-family: 'Caveat', cursive; font-size: 16px;
+    color: var(--dmt-amber-500);
+  }
+  .toolbar .folder-hint {
+    font-family: var(--font-mono);
+    font-size: 11px; color: var(--dmt-amber-700);
+    padding: 0 4px;
+  }
+  .toolbar .status-pill {
+    font-size: 11px; padding: 3px 9px; border-radius: 999px;
+    background: var(--dmt-amber-50);
+    border: 1px solid var(--dmt-amber-300);
+    color: var(--dmt-amber-700);
+    font-weight: 600; line-height: 1.4;
+    max-width: 60ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .toolbar .status-pill[data-kind="error"] {
+    background: #FEE2E2; border-color: #FCA5A5; color: #991B1B;
+  }
+  .toolbar .status-pill[data-kind="ok"] {
+    background: #DCFCE7; border-color: #86EFAC; color: #166534;
+  }
+  @media print { .toolbar, .screen-only { display: none !important; } }
+
+  /* ---------- Edit mode visual cues ---------- */
+  body.edit-mode [contenteditable="true"] {
+    outline: 1px dashed rgba(242,185,105,0.55);
+    outline-offset: 2px;
+    border-radius: 1mm;
+  }
+  body.edit-mode [contenteditable="true"]:focus {
+    outline: 2px solid var(--dmt-amber-500);
+    background: rgba(251,235,201,0.25);
+  }
+  body.edit-mode [data-check],
+  body.edit-mode [data-tag] { cursor: pointer; }
+
+  /* ---------- Per-box hide toggle (edit mode only) ---------- */
+  .box-hide-toggle {
+    position: absolute;
+    top: 1.5mm; right: 1.5mm;
+    font-family: inherit; font-size: 9px;
+    padding: 1px 6px; border-radius: 999px;
+    border: 1px solid var(--dmt-ink);
+    background: var(--bg-card); color: var(--dmt-ink);
+    cursor: pointer; line-height: 1.4;
+    opacity: 0; transition: opacity 0.12s;
+    z-index: 2;
+  }
+  .box:hover .box-hide-toggle,
+  .box-hide-toggle:focus { opacity: 1; }
+  .box-hide-toggle:hover { background: var(--dmt-amber-50); }
+
+  /* Hidden box: dim + striped in edit mode, removed entirely otherwise */
+  body.edit-mode .box.is-hidden {
+    opacity: 0.42;
+    background:
+      repeating-linear-gradient(
+        135deg,
+        var(--bg-card) 0 4mm,
+        rgba(29,12,12,0.04) 4mm 8mm
+      );
+  }
+  body.edit-mode .box.is-hidden .box-hide-toggle { opacity: 1; }
+  body:not(.edit-mode) .box.is-hidden { display: none; }
+  @media print { .box.is-hidden { display: none !important; } }
+
+  /* ---------- A4 LANDSCAPE: 297 × 210 mm ---------- */
+  .sheet {
+    width: 297mm;
+    height: 210mm;
+    background: var(--bg-page);
+    margin: 0 auto 24px;
+    padding: 9mm;
+    box-shadow: 0 8px 24px rgba(29,12,12,0.12);
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    gap: 4mm;
+  }
+  body.tall-sheets .sheet.sheet-2,
+  body.tall-sheets .sheet.sheet-3 { height: 297mm; }
+
+  /* ---------- Sheet header ---------- */
+  .header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 6mm;
+    padding-bottom: 3mm;
+    border-bottom: 1.5px solid var(--dmt-ink);
+  }
+  .brand-block {
+    color: var(--dmt-ink);
+    display: flex;
+    align-items: center;
+    gap: 4mm;
+    flex-shrink: 0;
+  }
+  .brand-block img { height: 11mm; width: auto; flex-shrink: 0; display: block; }
+  .brand-block .titles {
+    display: flex; flex-direction: column; line-height: 1.15;
+    padding-left: 4mm; border-left: 1px solid rgba(29,12,12,0.18);
+  }
+  .brand-block .name {
+    font-size: 9px; color: var(--dmt-amber-500); margin-bottom: 2px;
+    letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
+    white-space: nowrap;
+  }
+  .brand-block .role {
+    font-size: 10.5px; color: var(--dmt-ink); opacity: 0.75;
+    font-weight: 400; white-space: nowrap;
+  }
+  .sheet-title { display: flex; flex-direction: column; line-height: 1; }
+  .sheet-title .phase-num {
+    font-family: 'Caveat', cursive; font-size: 22px;
+    color: var(--dmt-amber-500); line-height: 1; margin-bottom: 2px;
+  }
+  .sheet-title h1 {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.015em;
+    margin: 0; line-height: 1.1; text-wrap: balance;
+  }
+  .sheet-title h1 em {
+    font-family: 'Caveat', cursive; font-style: normal; font-weight: 600;
+    color: var(--dmt-amber-500); font-size: 26px; margin-left: 3px;
+  }
+  .sheet-meta { text-align: right; font-size: 10px; color: var(--fg-2); line-height: 1.4; }
+  .sheet-meta .pageno {
+    font-family: 'Caveat', cursive; font-size: 22px;
+    color: var(--dmt-ink); line-height: 1; margin-bottom: 2px;
+  }
+  .sheet-meta .pill {
+    display: inline-block; padding: 2px 7px; border-radius: 999px;
+    background: var(--dmt-amber); color: var(--dmt-ink);
+    font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  /* ---------- Project meta strip ---------- */
+  .project-strip {
+    display: grid; grid-template-columns: 2fr 1.4fr 1.4fr 1fr;
+    gap: 4mm; font-size: 10px;
+  }
+  .field { display: flex; flex-direction: column; gap: 1mm; }
+  .field-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--fg-2);
+  }
+  .field-value {
+    min-height: 8mm;
+    border-bottom: 1px solid var(--dmt-ink);
+    padding: 0 0 1mm;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--dmt-ink);
+    display: block;
+  }
+  .field-value.bare { border: none; padding-top: 1mm; min-height: 0; font-weight: 400; }
+  .field-value.bare strong { font-weight: 700; }
+
+  /* ---------- Box ---------- */
+  .box {
+    background: var(--bg-card);
+    border: 1.5px solid var(--dmt-ink);
+    border-radius: 2mm;
+    padding: 3.5mm 4mm 4mm;
+    display: flex; flex-direction: column;
+    overflow: hidden; position: relative;
+    min-height: 0;
+  }
+  .box-eyebrow {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--dmt-amber-500);
+    line-height: 1; margin-bottom: 2mm;
+    display: flex; align-items: center; gap: 2mm;
+  }
+  .box-eyebrow .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 4.5mm; height: 4.5mm; border-radius: 999px;
+    background: var(--dmt-amber); color: var(--dmt-ink);
+    font-size: 9px; font-weight: 700;
+  }
+  .box-eyebrow .num.ink  { background: var(--dmt-ink); color: var(--dmt-cream); }
+  .box-eyebrow .num.warn { background: #B45309; color: #fff; }
+  .box h2 {
+    font-size: 13px; font-weight: 700; letter-spacing: -0.005em;
+    margin: 0 0 1.5mm; line-height: 1.15;
+  }
+  .box h2 .qword {
+    font-family: 'Caveat', cursive; font-weight: 600;
+    color: var(--dmt-amber-500); font-size: 16px; margin-right: 2px;
+  }
+  .box .prompt {
+    font-size: 9.5px; line-height: 1.35; color: var(--fg-2);
+    margin: 0 0 2mm; font-style: italic;
+  }
+
+  /* Sub-prompts */
+  .sub-prompts {
+    list-style: none; padding: 0; margin: 0 0 2mm;
+    display: flex; flex-direction: column; gap: 1mm;
+  }
+  .sub-prompts li {
+    font-size: 9.5px; line-height: 1.35; color: var(--fg-1);
+    padding-left: 3.5mm; position: relative;
+  }
+  .sub-prompts li::before {
+    content: "→"; position: absolute; left: 0; top: 0;
+    color: var(--dmt-amber-500); font-weight: 700;
+  }
+
+  /* Empty write-area (default until JSON populates the box) */
+  .write-area {
+    flex: 1;
+    background-image: linear-gradient(to bottom,
+      transparent 0,
+      transparent calc(6mm - 1px),
+      rgba(29,12,12,0.18) calc(6mm - 1px),
+      rgba(29,12,12,0.18) 6mm);
+    background-size: 100% 6mm;
+    background-position: 0 0;
+    min-height: 12mm;
+  }
+
+  /* Filled content (rendered from JSON) */
+  .filled {
+    font-size: 9.5px; line-height: 1.4; color: var(--dmt-ink);
+    flex: 1; overflow: hidden;
+  }
+  .filled p { margin: 0 0 1.5mm; }
+  .filled p:last-child { margin-bottom: 0; }
+  .filled ul { margin: 0 0 1.5mm; padding-left: 3.5mm; list-style: none; }
+  .filled ul li {
+    position: relative; margin-bottom: 0.8mm; line-height: 1.35;
+  }
+  .filled ul li::before {
+    content: "→"; position: absolute; left: -3.5mm;
+    color: var(--dmt-amber-500); font-weight: 700;
+  }
+  .filled strong { color: var(--dmt-ink); font-weight: 700; }
+  .filled em { font-style: italic; opacity: 0.85; }
+  .filled code {
+    font-family: var(--font-mono); font-size: 8.5px;
+    background: var(--dmt-amber-50);
+    border: 1px solid rgba(242,185,105,0.4);
+    padding: 0 0.6mm; border-radius: 0.6mm;
+    color: var(--dmt-amber-700); white-space: nowrap;
+  }
+  .filled .vraag {
+    display: inline-block;
+    background: #FEF3E0;
+    border: 1px solid rgba(180,83,9,0.35);
+    color: #B45309;
+    padding: 0.3mm 1.5mm; border-radius: 1mm;
+    font-size: 9px; font-weight: 600; margin: 0.5mm 0;
+  }
+
+  /* ---------- Tag pills (Vorm / Medium) ---------- */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 1.2mm; margin: 0 0 1.5mm; }
+  .tag {
+    font-size: 8.5px; padding: 0.6mm 2mm; border-radius: 999px;
+    background: var(--dmt-amber-50);
+    border: 1px solid rgba(242,185,105,0.55);
+    color: var(--dmt-ink); font-weight: 500;
+    user-select: none;
+  }
+  .tag.selected {
+    background: var(--dmt-amber);
+    border-color: var(--dmt-amber-500);
+    font-weight: 700;
+  }
+  .tag.crossed {
+    text-decoration: line-through;
+    color: var(--fg-3);
+    background: transparent;
+    border-color: var(--border-default);
+  }
+  .tag .small { font-size: 7.5px; color: var(--fg-2); margin-left: 1mm; }
+
+  /* ---------- Check rows ---------- */
+  .check-row {
+    display: flex; flex-wrap: wrap; gap: 2mm;
+    margin-top: auto; padding-top: 1.5mm;
+    font-size: 9px;
+  }
+  .check-row label {
+    display: inline-flex; align-items: center; gap: 1.2mm; color: var(--dmt-ink);
+    user-select: none;
+  }
+  .check-row .checkbox {
+    width: 3mm; height: 3mm; border: 1.2px solid var(--dmt-ink);
+    border-radius: 0.5mm; flex-shrink: 0; position: relative;
+  }
+  .check-row label.checked .checkbox { background: var(--dmt-ink); }
+  .check-row label.checked .checkbox::after {
+    content: "✓"; position: absolute;
+    top: -1.5mm; left: 0.2mm; color: var(--dmt-cream);
+    font-size: 9px; font-weight: 700; line-height: 1;
+  }
+  .check-row .note { color: var(--fg-2); font-size: 8.5px; font-weight: 500; }
+
+  /* ---------- SHEET 1 — BEGRIJP ---------- */
+  .sheet-1 { grid-template-rows: auto auto 1fr; }
+  .sheet-1 .grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 4mm; min-height: 0;
+  }
+  .sheet-1 .box-rhythm     { grid-column: 1; grid-row: 1; }
+  .sheet-1 .box-userstory  { grid-column: 1; grid-row: 2; }
+  .sheet-1 .box-mens-zelf  { grid-column: 2; grid-row: 1; }
+  .sheet-1 .box-mens-coll  { grid-column: 3; grid-row: 1; }
+  .sheet-1 .box-proces-now { grid-column: 2; grid-row: 2; }
+  .sheet-1 .box-proces-fit { grid-column: 3; grid-row: 2; }
+
+  /* ---------- SHEET 2 — VERTAAL ---------- */
+  .sheet-2 { grid-template-rows: auto auto 1fr; }
+  .sheet-2 .grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 4mm; min-height: 0;
+  }
+  .qai-write {
+    flex: 1; min-height: 50mm;
+    background-image: linear-gradient(to bottom,
+      transparent 0,
+      transparent calc(8mm - 1px),
+      rgba(29,12,12,0.18) calc(8mm - 1px),
+      rgba(29,12,12,0.18) 8mm);
+    background-size: 100% 8mm;
+    background-position: 0 0;
+  }
+  .qai-list {
+    list-style: none; margin: 0; padding: 0; counter-reset: qai;
+    flex: 1; overflow: hidden;
+  }
+  .qai-list:empty { display: none; }
+  .qai-list:not(:empty) ~ .qai-write { display: none; }
+  .qai-list li {
+    counter-increment: qai;
+    position: relative;
+    padding: 1.2mm 0 1.2mm 6mm;
+    border-bottom: 1px dotted rgba(29,12,12,0.15);
+    font-size: 9px; line-height: 1.3; color: var(--dmt-ink);
+  }
+  .qai-list li:last-child { border-bottom: none; }
+  .qai-list li::before {
+    content: counter(qai);
+    position: absolute; left: 0; top: 1.2mm;
+    width: 4.2mm; height: 4.2mm; border-radius: 999px;
+    background: var(--dmt-amber-50);
+    border: 1px solid var(--dmt-amber-300);
+    color: var(--dmt-amber-700);
+    font-size: 8.5px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .qai-list li.warn { background: #FEF3E0; }
+  .qai-list li code {
+    font-family: var(--font-mono); font-size: 8px;
+    background: var(--dmt-amber-50);
+    border: 1px solid rgba(242,185,105,0.4);
+    padding: 0 0.5mm; border-radius: 0.5mm;
+    color: var(--dmt-amber-700);
+  }
+  .qai-list li .vraag {
+    display: inline-block;
+    background: #FEF3E0;
+    border: 1px solid rgba(180,83,9,0.35);
+    color: #B45309;
+    padding: 0.2mm 1.2mm; border-radius: 0.8mm;
+    font-size: 8.5px; font-weight: 600; margin-left: 1mm;
+  }
+
+  /* ---------- SHEET 3 — BOUW + VERANKER ---------- */
+  .sheet-3 { grid-template-rows: auto auto auto auto; }
+  .sheet-3 .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-auto-rows: 1fr;
+    grid-auto-flow: row dense;
+    gap: 4mm; min-height: 0;
+  }
+  /* Only borg keeps an explicit span — other blocks flow row-major
+     in HTML order, so hiding any block just lets the rest fill in. */
+  .sheet-3 .box-borg { grid-column: span 2; }
+
+  /* ---------- Actions panel (optional) ---------- */
+  .actions-panel {
+    border: 1.5px solid var(--dmt-amber-500);
+    background: #FEF3E0;
+    border-radius: 2mm;
+    padding: 4mm 5mm;
+  }
+  .actions-panel h3 {
+    margin: 0 0 2mm; font-size: 13px;
+    color: var(--dmt-amber-700); font-weight: 700; letter-spacing: -0.005em;
+  }
+  .actions-panel h3 .star {
+    font-family: 'Caveat', cursive; color: var(--dmt-amber-500);
+    margin-right: 2mm; font-size: 18px;
+  }
+  .actions-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6mm;
+    font-size: 9.5px; line-height: 1.4;
+  }
+  .actions-grid strong { color: var(--dmt-ink); display: block; margin-bottom: 1mm; }
+  .actions-grid ol, .actions-grid ul { margin: 0 0 2mm; padding-left: 4.5mm; }
+  .actions-grid li { margin-bottom: 0.5mm; }
+  .actions-grid code {
+    font-family: var(--font-mono); font-size: 8.5px;
+    background: var(--bg-card); border: 1px solid var(--border-default);
+    padding: 0 0.6mm; border-radius: 0.6mm; color: var(--dmt-ink);
+  }
+
+  /* ---------- Print ---------- */
+  @page { size: A4 landscape; margin: 0; }
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { background: white !important; padding: 0 !important; }
+    .sheet {
+      margin: 0 !important;
+      box-shadow: none !important;
+      page-break-after: always;
+      break-after: page;
+      height: 210mm !important;
+    }
+    body.tall-sheets .sheet.sheet-2,
+    body.tall-sheets .sheet.sheet-3 { height: auto !important; }
+    .sheet:last-child { page-break-after: auto; break-after: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar screen-only">
+  <span class="label">BVBV Canvas</span>
+  <button id="btn-edit" type="button">Bewerk</button>
+  <button id="btn-save" type="button" title="Opslaan (⌘S) — eerste keer kies je de projects-map, daarna schrijft hij stilletjes [project].json">Bewaar JSON</button>
+  <button id="btn-save-as" type="button" title="Opslaan als… (⌘⇧S) — kies een specifieke locatie en bestandsnaam">Bewaar als…</button>
+  <button id="btn-open" type="button" title="Open JSON via systeemvenster — bewaart het handle zodat opslaan teruggaat naar dezelfde file">Open JSON…</button>
+  <label class="btn-file" title="Fallback voor browsers zonder File System Access API">Upload JSON<input type="file" id="btn-load" accept="application/json,.json"></label>
+  <button id="btn-folder" type="button" title="Kies (opnieuw) de projects-map waar saves naar toe gaan">Map…</button>
+  <span id="folder-hint" class="folder-hint" hidden></span>
+  <span id="status-pill" class="status-pill" hidden></span>
+  <button id="btn-print" type="button" title="Open printvenster — kies daar 'A4 liggend' en 'Dubbelzijdig (lange zijde)'. De browser onthoudt deze instelling.">Print A4↔ liggend</button>
+  <button id="btn-clear" type="button">Wis</button>
+  <span class="spacer"></span>
+  <span class="hint">A4 landscape · vul in browser of op papier ↗</span>
+</div>
+
+<!-- ============================================
+     SHEET 1 — BEGRIJP
+     ============================================ -->
+<section class="sheet sheet-1">
+  <header class="header">
+    <div class="brand-block">
+      <img src="assets/logo-full.png" alt="">
+      <div class="titles">
+        <span class="name">Datawijs met Thijs</span>
+        <span class="role">BVBV Canvas · Begrijp</span>
+      </div>
+    </div>
+    <div class="sheet-title">
+      <span class="phase-num">fase 1 · begrijp</span>
+      <h1>Bij welke taken en beslissingen kan data <em>helpen?</em></h1>
+    </div>
+    <div class="sheet-meta">
+      <div class="pageno">01</div>
+      <span class="pill">begrijp</span>
+    </div>
+  </header>
+
+  <div class="project-strip">
+    <div class="field">
+      <span class="field-label">Project / dataproduct</span>
+      <span class="field-value" data-meta="project"></span>
+    </div>
+    <div class="field">
+      <span class="field-label">Eindgebruiker (rol &amp; naam)</span>
+      <span class="field-value" data-meta="user_1"></span>
+    </div>
+    <div class="field">
+      <span class="field-label">Datum gesprek</span>
+      <span class="field-value" data-meta="date_1"></span>
+    </div>
+    <div class="field">
+      <span class="field-label">Vel</span>
+      <span class="field-value bare"><strong>1 / 3</strong> · Begrijp</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="box box-rhythm">
+      <div class="box-eyebrow"><span class="num">R</span> ritme &amp; aanleiding</div>
+      <h2><span class="qword">in welk</span> overleg of werkproces landt dit?</h2>
+      <p class="prompt">Sluit aan bij een bestaand ritme — daar zie je gebruik écht gebeuren.</p>
+      <ul class="sub-prompts">
+        <li>Dagelijkse taken — welke?</li>
+        <li>Wekelijks / maandelijks overleg — welke?</li>
+        <li>Wat wordt nu gebruikt om te beslissen?</li>
+      </ul>
+      <div data-box="rhythm"><div class="write-area"></div></div>
+      <div class="check-row" data-checks="rhythm">
+        <label data-check="aanvulling"><span class="checkbox"></span>Aanvulling</label>
+        <label data-check="vervanging"><span class="checkbox"></span>Vervanging</label>
+        <label data-check="nieuw"><span class="checkbox"></span>Nieuw</label>
+      </div>
+    </div>
+
+    <div class="box box-userstory">
+      <div class="box-eyebrow"><span class="num">U</span> user story &amp; succes</div>
+      <h2><span class="qword">wanneer</span> ik … dan wil ik … zodat …</h2>
+      <p class="prompt">Vul aan + definieer succes vóór de bouw.</p>
+      <div data-box="userstory"><div class="write-area"></div></div>
+      <div class="check-row" data-checks="userstory">
+        <label data-check="meetbaar"><span class="checkbox"></span>Impact direct meetbaar</label>
+        <label data-check="andere_initiatieven"><span class="checkbox"></span>Andere initiatieven gemarkeerd</label>
+      </div>
+    </div>
+
+    <div class="box box-mens-zelf">
+      <div class="box-eyebrow"><span class="num">1</span> mens · gebruiker zelf</div>
+      <h2><span class="qword">wat heeft</span> de gebruiker nodig?</h2>
+      <p class="prompt">Vraag het aan de eindgebruiker zélf, niet via de Product Owner.</p>
+      <div data-box="mens_zelf"><div class="write-area"></div></div>
+    </div>
+
+    <div class="box box-mens-coll">
+      <div class="box-eyebrow"><span class="num">2</span> mens · collega's eromheen</div>
+      <h2><span class="qword">wat willen</span> de collega's weten?</h2>
+      <p class="prompt">Meetings, klantcontact, rapportage manager — wie kijkt mee?</p>
+      <div data-box="mens_coll"><div class="write-area"></div></div>
+    </div>
+
+    <div class="box box-proces-now">
+      <div class="box-eyebrow"><span class="num">3</span> proces · beslissingen</div>
+      <h2><span class="qword">welke</span> taken &amp; beslissingen ondersteunt dit?</h2>
+      <p class="prompt">Concreet: welk moment in de week wordt nu beter?</p>
+      <div data-box="proces"><div class="write-area"></div></div>
+    </div>
+
+    <div class="box box-proces-fit">
+      <div class="box-eyebrow"><span class="num warn">!</span> belangrijke vragen aan de gebruiker</div>
+      <h2><span class="qword">hoe</span> ga je dit gebruiken?</h2>
+      <ul class="sub-prompts">
+        <li>Alleen voor jou nodig — of óók voor anderen?</li>
+        <li>Realistisch: hoeveel tijd per week ga je dit echt gebruiken?</li>
+        <li>Hoe moet het eindresultaat absoluut <em>niet</em> eruitzien?</li>
+      </ul>
+      <div data-box="vragen"><div class="write-area"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SHEET 2 — VERTAAL
+     ============================================ -->
+<section class="sheet sheet-2">
+  <header class="header">
+    <div class="brand-block">
+      <img src="assets/logo-full.png" alt="">
+      <div class="titles">
+        <span class="name">Datawijs met Thijs</span>
+        <span class="role">BVBV Canvas · Vertaal</span>
+      </div>
+    </div>
+    <div class="sheet-title">
+      <span class="phase-num">fase 2 · vertaal</span>
+      <h1>Van vraag naar <em>kwantitatief</em> antwoord.</h1>
+    </div>
+    <div class="sheet-meta">
+      <div class="pageno">02</div>
+      <span class="pill">vertaal</span>
+    </div>
+  </header>
+
+  <div class="project-strip">
+    <div class="field">
+      <span class="field-label">Project / dataproduct</span>
+      <span class="field-value" data-meta="project"></span>
+    </div>
+    <div class="field">
+      <span class="field-label">Eindgebruiker (rol &amp; naam)</span>
+      <span class="field-value" data-meta="user_2"></span>
+    </div>
+    <div class="field">
+      <span class="field-label">Datum gesprek</span>
+      <span class="field-value" data-meta="date_2"></span>
+    </div>
+    <div class="field">
+      <span class="field-label">Vel</span>
+      <span class="field-value bare"><strong>2 / 3</strong> · Vertaal</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="box">
+      <div class="box-eyebrow"><span class="num">Q</span> welke vragen?</div>
+      <h2><span class="qword">welke vragen</span> moet het product beantwoorden?</h2>
+      <p class="prompt">Voorbeeld: welke producten dragen het minst bij aan de winst?</p>
+      <ol class="qai-list" data-qai="q"></ol>
+      <div class="qai-write"></div>
+    </div>
+    <div class="box">
+      <div class="box-eyebrow"><span class="num">A</span> welk kwantitatief resultaat?</div>
+      <h2><span class="qword">welk</span> meetbaar antwoord levert het op?</h2>
+      <p class="prompt">Vertaal elke vraag naar één meetbaar getal of trend.</p>
+      <ol class="qai-list" data-qai="a"></ol>
+      <div class="qai-write"></div>
+    </div>
+    <div class="box">
+      <div class="box-eyebrow"><span class="num">I</span> welke input is er nodig?</div>
+      <h2><span class="qword">welke</span> data, bron, periode?</h2>
+      <p class="prompt">Per rij: welke inputs zijn nodig om tot dat antwoord te komen?</p>
+      <ol class="qai-list" data-qai="i"></ol>
+      <div class="qai-write"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SHEET 3 — BOUW & VERANKER
+     ============================================ -->
+<section class="sheet sheet-3">
+  <header class="header">
+    <div class="brand-block">
+      <img src="assets/logo-full.png" alt="">
+      <div class="titles">
+        <span class="name">Datawijs met Thijs</span>
+        <span class="role">BVBV Canvas · Bouw &amp; Veranker</span>
+      </div>
+    </div>
+    <div class="sheet-title">
+      <span class="phase-num">fase 3 + 4 · bouw &amp; veranker</span>
+      <h1>Wat is <em>haalbaar</em>, en hoe komt het beschikbaar?</h1>
+    </div>
+    <div class="sheet-meta">
+      <div class="pageno">03</div>
+      <span class="pill">bouw + veranker</span>
+    </div>
+  </header>
+
+  <div class="project-strip">
+    <div class="field">
+      <span class="field-label">Project / dataproduct</span>
+      <span class="field-value" data-meta="project"></span>
+    </div>
+    <div class="field">
+      <span class="field-label">Eigenaar / opdrachtgever</span>
+      <span class="field-value" data-meta="owner"></span>
+    </div>
+    <div class="field">
+      <span class="field-label">Datum check</span>
+      <span class="field-value" data-meta="date_3"></span>
+    </div>
+    <div class="field">
+      <span class="field-label">Vel</span>
+      <span class="field-value bare"><strong>3 / 3</strong> · Bouw + Veranker</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="box box-cap">
+      <div class="box-eyebrow"><span class="num">H1</span> haalbaarheid · capaciteit</div>
+      <h2><span class="qword">hebben</span> we genoeg mensen &amp; kennis?</h2>
+      <p class="prompt">Datateam én domeinexperts — niet alleen data.</p>
+      <div data-box="h1"><div class="write-area"></div></div>
+    </div>
+    <div class="box box-data">
+      <div class="box-eyebrow"><span class="num">H2</span> haalbaarheid · data</div>
+      <h2><span class="qword">is de</span> data er, en bruikbaar?</h2>
+      <p class="prompt">Bruikbaar = vindbaar, juist, met toegang voor wie het nodig heeft.</p>
+      <div data-box="h2"><div class="write-area"></div></div>
+    </div>
+    <div class="box box-rules">
+      <div class="box-eyebrow"><span class="num">H3</span> haalbaarheid · regels</div>
+      <h2><span class="qword">welke</span> regels en beperkingen?</h2>
+      <p class="prompt">Regelgeving, beveiliging, tooling — pionieren toegestaan?</p>
+      <div data-box="h3"><div class="write-area"></div></div>
+    </div>
+    <div class="box box-success">
+      <div class="box-eyebrow"><span class="num">H4</span> haalbaarheid · succes meten</div>
+      <h2><span class="qword">hoe</span> bepalen we wat succes is?</h2>
+      <p class="prompt">Sluit terug aan op de succescriteria uit fase Vertaal.</p>
+      <div data-box="h4"><div class="write-area"></div></div>
+    </div>
+
+    <div class="box box-vorm">
+      <div class="box-eyebrow"><span class="num">V</span> vorm &amp; weergave</div>
+      <h2><span class="qword">welke</span> oplossing leveren we op?</h2>
+      <p class="prompt">Wat is de beste vorm voor déze gebruiker?</p>
+      <div class="tag-row" data-tags="vorm">
+        <span class="tag" data-tag="Dashboard">Dashboard</span>
+        <span class="tag" data-tag="Database">Database</span>
+        <span class="tag" data-tag="Datamodel">Datamodel</span>
+        <span class="tag" data-tag="Index">Index</span>
+        <span class="tag" data-tag="Algoritme">Algoritme</span>
+        <span class="tag" data-tag="Simulator">Simulator</span>
+        <span class="tag" data-tag="Website">Website</span>
+        <span class="tag" data-tag="Infographic">Infographic</span>
+        <span class="tag" data-tag="API">API</span>
+      </div>
+      <div data-box="vorm"><div class="write-area"></div></div>
+    </div>
+    <div class="box box-medium">
+      <div class="box-eyebrow"><span class="num">M</span> medium</div>
+      <h2><span class="qword">waar</span> komt het beschikbaar?</h2>
+      <p class="prompt">Standaard rapportageplek — of een aparte plek?</p>
+      <div class="tag-row" data-tags="medium">
+        <span class="tag" data-tag="Bestaande BI">Bestaande BI</span>
+        <span class="tag" data-tag="SharePoint">SharePoint</span>
+        <span class="tag" data-tag="Eigen site">Eigen site</span>
+        <span class="tag" data-tag="Scherm op werkvloer">Scherm op werkvloer</span>
+        <span class="tag" data-tag="E-mail">E-mail</span>
+      </div>
+      <div data-box="medium"><div class="write-area"></div></div>
+    </div>
+    <div class="box box-borg">
+      <div class="box-eyebrow"><span class="num ink">★</span> borging — verankerd in je werkweek</div>
+      <h2><span class="qword">hoe</span> zorgen we dat het écht in het proces landt?</h2>
+      <p class="prompt">Eigenaarschap, demo, training, documentatie, onderhoud — wie doet wat, wanneer?</p>
+      <div class="check-row" data-checks="borg" style="margin: 0 0 2mm; padding-top: 0;">
+        <label data-check="demo"><span class="checkbox"></span>Demo</label>
+        <label data-check="training"><span class="checkbox"></span>Training</label>
+        <label data-check="documentatie"><span class="checkbox"></span>Documentatie</label>
+        <label data-check="eigenaarschap"><span class="checkbox"></span>Eigenaarschap</label>
+        <label data-check="onderhoud"><span class="checkbox"></span>Onderhoud</label>
+        <label data-check="feedback"><span class="checkbox"></span>Feedback­ronde</label>
+      </div>
+      <div data-box="borg"><div class="write-area"></div></div>
+    </div>
+  </div>
+
+  <!-- Optional actions panel — populated only when JSON has data.actions -->
+  <div class="actions-panel" hidden>
+    <h3><span class="star">★</span><span class="title">Concreet — wat valideren we?</span></h3>
+    <div class="actions-grid">
+      <div>
+        <strong>Open vragen:</strong>
+        <ol data-actions="questions"></ol>
+      </div>
+      <div>
+        <strong>Mockup &amp; demo-materiaal:</strong>
+        <ul data-actions="materials"></ul>
+        <strong style="margin-top: 2mm;">Beslissingen die we willen vastleggen:</strong>
+        <ul data-actions="decisions"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="assets/canvas.js"></script>
+</body></html>
