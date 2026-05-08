@@ -85,3 +85,7 @@ When filled content overflows the default A4 landscape height, set `"settings": 
 - **No frameworks**: keep `canvas.js` vanilla. No bundler, no transpile step.
 - **Print-first**: when changing CSS, verify both screen and `Cmd+P` preview before reporting done. Anything that should only show on screen needs `@media print { display: none }` or a `.screen-only` class.
 - **Client data stays out of git**: `projects/*.json` is `.gitignore`d except for `template.json`. Standalone hardcoded `BVBV Canvas - *.html` files are also ignored. If you generate a per-client variant for testing, keep it local.
+
+## First-draft via AI
+
+To skip the tedious empty-canvas fill at project start, use the `bvbv-draft` skill (`.claude/skills/bvbv-draft/SKILL.md`). It reads `projects/SCHEMA.md` (key-by-key purpose, valid checks/tags, HTML conventions) and `projects/evoke.json` (exemplar voice/density), then writes a populated `projects/<slug>.json` from whatever project context the user provides. Assumptions are flagged inline as `<span class="vraag">…</span>` so the user can spot them in the canvas.
