@@ -1,6 +1,6 @@
 ---
 name: bvbv-draft
-description: Genereer een eerste-draft BVBV Canvas project-JSON op basis van bestaande projectcontext (notities, e-mails, projectplannen, transcripts). Gebruik wanneer de gebruiker vraagt om "een canvas-draft", "vul het canvas in voor <project>", "maak een eerste versie van projects/<slug>.json" — kortom: een gevuld canvas i.p.v. handmatig elk veld intikken.
+description: 'Genereer een eerste-draft BVBV Canvas project-JSON op basis van bestaande projectcontext zoals notities, e-mails of projectplannen. Gebruik wanneer de gebruiker een gevuld projects/<slug>.json wil in plaats van handmatig elk veld in te tikken.'
 ---
 
 # BVBV Canvas — eerste-draft generator
@@ -15,10 +15,9 @@ Doel: bespaar tijd bij sessie-start. In plaats van een leeg template opent de ge
 
 ## Procedure
 
-1. **Lees `projects/SCHEMA.md`.** Bevat alle keys, geldige check-/tag-waarden en HTML-conventies. Niet overslaan, ook niet als je denkt dat je het weet.
-2. **Skim `projects/evoke.json`.** Dat is de stijl/dichtheid om naar te streven — niet dichter op een eerste draft.
-3. **Lees de meegeleverde context.** Bij lange bronnen: mentaal samenvatten per box-key vóór je begint te schrijven.
-4. **Stel de JSON op** volgens het schema:
+1. **Lees `projects/SCHEMA.md`.** Bevat alle keys, geldige check-/tag-waarden, HTML-conventies en stijl-aanwijzingen. Niet overslaan, ook niet als je denkt dat je het weet.
+2. **Lees de meegeleverde context.** Bij lange bronnen: mentaal samenvatten per box-key vóór je begint te schrijven.
+3. **Stel de JSON op** volgens het schema:
    - Verwijder alle template-prompts; vervang door echte inhoud of `<span class="vraag">…</span>`.
    - Markeer **elke** aanname met `<span class="vraag">`. Liever te veel flags dan stille gokken.
    - Data-objecten in `<code>`: `<code>FCT_Sales</code>`, `<code># Bruto Marge</code>`. Onzeker over de naam? Dan ook in een `vraag`-span.
@@ -26,11 +25,11 @@ Doel: bespaar tijd bij sessie-start. In plaats van een leeg template opent de ge
    - Vel 3 `h1`–`h4`: zet `"hidden": true` als de bouwfase niet aan de orde is in de bronnen. **Niet** verbergen: `vorm`, `medium`, `borg`.
    - `actions.show`: alleen `true` als er concrete open vragen / materialen / besluiten in de bron staan.
    - `settings.tall_sheets`: `true` zodra een vel duidelijk vol oogt (veel qai-rijen, lange lijsten op vel 1).
-5. **Valideer en schrijf** naar `projects/<slug>.json`. Parse de JSON eerst zelf — broken JSON breekt het canvas zonder duidelijke foutmelding. Het bestand is `.gitignore`d (klantdata blijft lokaal); dat is correct.
-6. **Rapporteer kort** (max 4 zinnen): welke boxen vol zitten, hoeveel `vraag`-spans, welke leeg zijn, en de URL om te openen: `http://localhost:8000/BVBV%20Canvas.html?project=projects/<slug>.json`.
+4. **Valideer en schrijf** naar `projects/<slug>.json`. Parse de JSON eerst zelf — broken JSON breekt het canvas zonder duidelijke foutmelding. Het bestand is `.gitignore`d (klantdata blijft lokaal); dat is correct.
+5. **Rapporteer kort** (max 4 zinnen): welke boxen vol zitten, hoeveel `vraag`-spans, welke leeg zijn, en de URL om te openen: `http://localhost:8000/BVBV%20Canvas.html?project=projects/<slug>.json`.
 
 ## Toon
 
-- **Nederlands**, zakelijk, concreet. Geen marketing-taal. Matcht de stem in `evoke.json`.
+- **Nederlands**, zakelijk, concreet. Geen marketing-taal.
 - **Houd het bewust onaf.** 2–3 bullets per box is genoeg; de gebruiker vult de rest in tijdens de gespreksvoorbereiding.
 - **Open vragen zijn een feature.** Een draft met 8 `vraag`-spans is bruikbaarder dan een draft die alles claimt te weten.

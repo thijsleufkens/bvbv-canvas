@@ -89,7 +89,7 @@ Array van rijen, elk met 3 kolommen die op rij-index aligned blijven.
 
 `box.html` is een **array** van HTML-strings; één string per "blok" (alinea, lijst, kop). De array wordt visueel samengevoegd; splitsing per array-element houdt de JSON git-leesbaar.
 
-Toegestane patronen — zie `evoke.json` voor voorbeelden:
+Toegestane patronen:
 
 | patroon                                                | wanneer                                                                |
 | ------------------------------------------------------ | ---------------------------------------------------------------------- |

@@ -88,4 +88,4 @@ When filled content overflows the default A4 landscape height, set `"settings": 
 
 ## First-draft via AI
 
-To skip the tedious empty-canvas fill at project start, use the `bvbv-draft` skill (`.claude/skills/bvbv-draft/SKILL.md`). It reads `projects/SCHEMA.md` (key-by-key purpose, valid checks/tags, HTML conventions) and `projects/evoke.json` (exemplar voice/density), then writes a populated `projects/<slug>.json` from whatever project context the user provides. Assumptions are flagged inline as `<span class="vraag">…</span>` so the user can spot them in the canvas.
+To skip the tedious empty-canvas fill at project start, use the `bvbv-draft` skill (`.claude/skills/bvbv-draft/SKILL.md`). It reads `projects/SCHEMA.md` (key-by-key purpose, valid checks/tags values, HTML conventions, and tone guidance), then writes a populated `projects/<slug>.json` from whatever project context the user provides. Assumptions are flagged inline as `<span class="vraag">…</span>` so the user can spot them in the canvas.
