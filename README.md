@@ -42,7 +42,7 @@ Een leeg canvas invullen is repetitief. Met [Claude Code](https://claude.com/cla
 
 > Lees `projects/SCHEMA.md` en mijn notities in `<pad>`. Schrijf `projects/<slug>.json` als eerste draft.
 
-De agent vult elk vak met wat hij uit de bron kan afleiden, en markeert aannames inline als `<span class="vraag">…</span>` — die kleuren oranje in het canvas, dus je ziet meteen wat nog bevraagd moet worden. Zie `.claude/skills/bvbv-draft/SKILL.md` voor de project-skill die Claude Code automatisch oppikt.
+De agent vult elk vak met wat hij uit de bron kan afleiden, en markeert aannames inline als `<span class="vraag">…</span>` — die kleuren oranje in het canvas, dus je ziet meteen wat nog bevraagd moet worden. In Claude Code is dit gebundeld als de slash-command **`/bvbv-draft`** (`.claude/commands/bvbv-draft.md`); die wordt automatisch herkend zodra je een sessie start vanuit deze repo.
 
 ## Bewerken in de browser
 

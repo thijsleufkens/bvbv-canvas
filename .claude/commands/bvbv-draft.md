@@ -1,15 +1,15 @@
 ---
-name: bvbv-draft
-description: 'Genereer een eerste-draft BVBV Canvas project-JSON op basis van bestaande projectcontext zoals notities, e-mails of projectplannen. Gebruik wanneer de gebruiker een gevuld projects/<slug>.json wil in plaats van handmatig elk veld in te tikken.'
+description: Genereer een eerste-draft BVBV Canvas project-JSON op basis van bestaande projectcontext.
+argument-hint: <slug> + verwijs naar context (bestand, geplakte tekst, URL)
 ---
 
 # BVBV Canvas — eerste-draft generator
 
-Doel: bespaar tijd bij sessie-start. In plaats van een leeg template opent de gebruiker het canvas met een ingevulde interpretatie van de meegeleverde context, met `<span class="vraag">`-markers op elke aanname.
+Je gaat een **eerste-draft** `projects/<slug>.json` genereren voor het BVBV Canvas. Doel: bespaar tijd bij sessie-start. In plaats van een leeg template opent de gebruiker het canvas met een ingevulde interpretatie van de meegeleverde context, met `<span class="vraag">`-markers op elke aanname.
 
 ## Vooraf controleren
 
-1. **Slug** — lowercase, koppeltekens, geen spaties. Wordt de bestandsnaam (`projects/<slug>.json`). Vraag als hij ontbreekt.
+1. **Slug** — lowercase, koppeltekens, geen spaties. Wordt de bestandsnaam (`projects/<slug>.json`). Vraag als hij ontbreekt in `$ARGUMENTS`.
 2. **Minstens één stuk projectcontext.** Bestandspaden, geplakte tekst, of een URL. Als er niets is: vraag erom — niet verzinnen.
 3. Als `projects/<slug>.json` al bestaat: vraag of je mag overschrijven of een andere naam wilt.
 
@@ -33,3 +33,7 @@ Doel: bespaar tijd bij sessie-start. In plaats van een leeg template opent de ge
 - **Nederlands**, zakelijk, concreet. Geen marketing-taal.
 - **Houd het bewust onaf.** 2–3 bullets per box is genoeg; de gebruiker vult de rest in tijdens de gespreksvoorbereiding.
 - **Open vragen zijn een feature.** Een draft met 8 `vraag`-spans is bruikbaarder dan een draft die alles claimt te weten.
+
+---
+
+Argumenten meegegeven door de gebruiker: $ARGUMENTS
