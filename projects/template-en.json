@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "project": "Example project",
+    "user_1": "Primary user — role & count",
+    "date_1": "YYYY-MM-DD",
+    "user_2": "Who's looking on · decision-makers",
+    "date_2": "YYYY-MM-DD",
+    "owner": "Owner(s) · data partner",
+    "date_3": "YYYY-MM-DD"
+  },
+  "settings": {
+    "tall_sheets": false
+  },
+  "boxes": {
+    "rhythm": {
+      "html": [
+        "<p><strong>Daily:</strong> what does the user do today, how often?</p>",
+        "<p><strong>Weekly / monthly:</strong> which rhythm is already set?</p>",
+        "<p><strong>What's used today:</strong> tools, exports, spreadsheets, ad-hoc.</p>"
+      ],
+      "checks": []
+    },
+    "userstory": {
+      "html": [
+        "<p><em>\"When I …, I want to … so that …\"</em></p>",
+        "<p><strong>Success:</strong></p>",
+        "<ul><li>Concrete measurable result 1</li><li>Concrete measurable result 2</li></ul>"
+      ],
+      "checks": []
+    },
+    "mens_zelf": {
+      "html": [
+        "<p>Who is the primary user themselves? Skill level, tools they already work with, language/jargon.</p>"
+      ]
+    },
+    "mens_coll": {
+      "html": [
+        "<p>Who does the user share or discuss this with? Manager, peers, clients — and in what setting?</p>"
+      ]
+    },
+    "proces": {
+      "html": [
+        "<p>Which process or decision does this support? Where in the week/month does it recur?</p>"
+      ]
+    },
+    "vragen": {
+      "html": [
+        "<p>Which (hidden) questions is the user trying to answer? Write them as sentences, not as KPIs.</p>"
+      ]
+    },
+    "h1": {
+      "html": [
+        "<p><strong>What do we already have?</strong> Existing systems, data models, capacity.</p>"
+      ]
+    },
+    "h2": {
+      "html": [
+        "<p><strong>Which data is needed?</strong> Sources, quality, frequency, owner.</p>"
+      ]
+    },
+    "h3": {
+      "html": [
+        "<p><strong>Which rules/logic?</strong> Definitions, business rules, edge cases.</p>"
+      ]
+    },
+    "h4": {
+      "html": [
+        "<p><strong>How do we measure success?</strong> Tie back to the criteria from the Translate phase.</p>"
+      ]
+    },
+    "vorm": {
+      "html": [
+        "<p>Describe the chosen form in one sentence — why does it fit this particular user?</p>"
+      ],
+      "tags": {}
+    },
+    "medium": {
+      "html": [
+        "<p>Where does it become available? Standard reporting spot or a separate place — and why?</p>"
+      ],
+      "tags": {}
+    },
+    "borg": {
+      "html": [
+        "<p>Who is the owner? How does it land in the work rhythm? Demo, training, documentation, maintenance, feedback.</p>"
+      ],
+      "checks": []
+    }
+  },
+  "qai": [
+    {
+      "q": "Example question — what must the user concretely be able to do?",
+      "a": "Example answer — translation into metric/dimension/visualization.",
+      "i": "Insight — what stands out? An assumption we need to validate?",
+      "warn": false
+    }
+  ],
+  "actions": {
+    "show": false,
+    "title": "Concretely — what do we validate next session?",
+    "questions": [],
+    "materials": [],
+    "decisions": []
+  }
+}

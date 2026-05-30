@@ -1,7 +1,7 @@
-<!DOCTYPE html><html lang="nl"><head>
+<!DOCTYPE html><html lang="en"><head>
 
 <meta charset="UTF-8">
-<title>BVBV Canvas — Datawijs met Thijs</title>
+<title>BVBV Canvas — Datawijs met Thijs (English)</title>
 <link rel="icon" type="image/svg+xml" href="assets/logo-full.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -20,10 +20,9 @@
     padding: 32px 0;
   }
 
-  /* Schaal het canvas mee met grote schermen — print blijft echte mm.
-     297mm ≈ 1123 CSS px; we trekken 64px af voor padding/scrollbar en
-     cappen op 2.4× zodat fonts ook op 4K leesbaar blijven zonder ze poster-groot
-     te maken. */
+  /* Scale the canvas up on large screens — print stays at real mm.
+     297mm ≈ 1123 CSS px; we subtract 64px for padding/scrollbar and
+     cap at 2.4× so fonts stay legible on 4K without going poster-sized. */
   @media screen {
     body { zoom: clamp(1, calc((100vw - 64px) / 1180px), 2.4); }
   }
@@ -332,7 +331,7 @@
     font-size: 9px; font-weight: 600; margin: 0.5mm 0;
   }
 
-  /* ---------- Tag pills (Vorm / Medium) ---------- */
+  /* ---------- Tag pills (Form / Medium) ---------- */
   .tag-row { display: flex; flex-wrap: wrap; gap: 1.2mm; margin: 0 0 1.5mm; }
   .tag {
     font-size: 8.5px; padding: 0.6mm 2mm; border-radius: 999px;
@@ -376,7 +375,7 @@
   }
   .check-row .note { color: var(--fg-2); font-size: 8.5px; font-weight: 500; }
 
-  /* ---------- SHEET 1 — BEGRIJP ---------- */
+  /* ---------- SHEET 1 — UNDERSTAND ---------- */
   .sheet-1 { grid-template-rows: auto auto 1fr; }
   .sheet-1 .grid {
     display: grid;
@@ -391,7 +390,7 @@
   .sheet-1 .box-proces-now { grid-column: 2; grid-row: 2; }
   .sheet-1 .box-proces-fit { grid-column: 3; grid-row: 2; }
 
-  /* ---------- SHEET 2 — VERTAAL ---------- */
+  /* ---------- SHEET 2 — TRANSLATE ---------- */
   .sheet-2 { grid-template-rows: auto auto 1fr; }
   .sheet-2 .grid {
     display: grid; grid-template-columns: 1fr 1fr 1fr;
@@ -448,7 +447,7 @@
     font-size: 8.5px; font-weight: 600; margin-left: 1mm;
   }
 
-  /* ---------- SHEET 3 — BOUW + VERANKER ---------- */
+  /* ---------- SHEET 3 — BUILD + EMBED ---------- */
   .sheet-3 { grid-template-rows: auto auto auto auto; }
   .sheet-3 .grid {
     display: grid;
@@ -511,23 +510,23 @@
 
 <div class="toolbar screen-only">
   <span class="label">BVBV Canvas</span>
-  <button id="btn-lang" type="button" title="Switch to the English version">🌐 EN</button>
-  <button id="btn-edit" type="button">Bewerk</button>
-  <button id="btn-save" type="button" title="Opslaan (⌘S) — eerste keer kies je de projects-map, daarna schrijft hij stilletjes [project].json">Bewaar JSON</button>
-  <button id="btn-save-as" type="button" title="Opslaan als… (⌘⇧S) — kies een specifieke locatie en bestandsnaam">Bewaar als…</button>
-  <button id="btn-open" type="button" title="Open JSON via systeemvenster — bewaart het handle zodat opslaan teruggaat naar dezelfde file">Open JSON…</button>
-  <label class="btn-file" title="Fallback voor browsers zonder File System Access API">Upload JSON<input type="file" id="btn-load" accept="application/json,.json"></label>
-  <button id="btn-folder" type="button" title="Kies (opnieuw) de projects-map waar saves naar toe gaan">Map…</button>
+  <button id="btn-lang" type="button" title="Schakel naar de Nederlandse versie">🌐 NL</button>
+  <button id="btn-edit" type="button">Edit</button>
+  <button id="btn-save" type="button" title="Save (⌘S) — the first time you pick the projects folder, after that it writes [project].json silently">Save JSON</button>
+  <button id="btn-save-as" type="button" title="Save as… (⌘⇧S) — pick a specific location and file name">Save as…</button>
+  <button id="btn-open" type="button" title="Open JSON via the system dialog — keeps the handle so saving goes back to the same file">Open JSON…</button>
+  <label class="btn-file" title="Fallback for browsers without the File System Access API">Upload JSON<input type="file" id="btn-load" accept="application/json,.json"></label>
+  <button id="btn-folder" type="button" title="(Re)pick the projects folder that saves are written to">Folder…</button>
   <span id="folder-hint" class="folder-hint" hidden></span>
   <span id="status-pill" class="status-pill" hidden></span>
-  <button id="btn-print" type="button" title="Open printvenster — kies daar 'A4 liggend' en 'Dubbelzijdig (lange zijde)'. De browser onthoudt deze instelling.">Print A4↔ liggend</button>
-  <button id="btn-clear" type="button">Wis</button>
+  <button id="btn-print" type="button" title="Open the print dialog — choose 'A4 landscape' and 'Double-sided (long edge)'. The browser remembers this setting.">Print A4 ↔ landscape</button>
+  <button id="btn-clear" type="button">Clear</button>
   <span class="spacer"></span>
-  <span class="hint">A4 landscape · vul in browser of op papier ↗</span>
+  <span class="hint">A4 landscape · fill in the browser or on paper ↗</span>
 </div>
 
 <!-- ============================================
-     SHEET 1 — BEGRIJP
+     SHEET 1 — UNDERSTAND
      ============================================ -->
 <section class="sheet sheet-1">
   <header class="header">
@@ -535,95 +534,95 @@
       <img src="assets/logo-full.png" alt="">
       <div class="titles">
         <span class="name">Datawijs met Thijs</span>
-        <span class="role">BVBV Canvas · Begrijp</span>
+        <span class="role">BVBV Canvas · Understand</span>
       </div>
     </div>
     <div class="sheet-title">
-      <span class="phase-num">fase 1 · begrijp</span>
-      <h1>Bij welke taken en beslissingen kan data <em>helpen?</em></h1>
+      <span class="phase-num">phase 1 · understand</span>
+      <h1>Which tasks and decisions can data <em>help</em> with?</h1>
     </div>
     <div class="sheet-meta">
       <div class="pageno">01</div>
-      <span class="pill">begrijp</span>
+      <span class="pill">understand</span>
     </div>
   </header>
 
   <div class="project-strip">
     <div class="field">
-      <span class="field-label">Project / dataproduct</span>
+      <span class="field-label">Project / data product</span>
       <span class="field-value" data-meta="project"></span>
     </div>
     <div class="field">
-      <span class="field-label">Eindgebruiker (rol &amp; naam)</span>
+      <span class="field-label">End user (role &amp; name)</span>
       <span class="field-value" data-meta="user_1"></span>
     </div>
     <div class="field">
-      <span class="field-label">Datum gesprek</span>
+      <span class="field-label">Conversation date</span>
       <span class="field-value" data-meta="date_1"></span>
     </div>
     <div class="field">
-      <span class="field-label">Vel</span>
-      <span class="field-value bare"><strong>1 / 3</strong> · Begrijp</span>
+      <span class="field-label">Sheet</span>
+      <span class="field-value bare"><strong>1 / 3</strong> · Understand</span>
     </div>
   </div>
 
   <div class="grid">
     <div class="box box-rhythm">
-      <div class="box-eyebrow"><span class="num">R</span> ritme &amp; aanleiding</div>
-      <h2><span class="qword">in welk</span> overleg of werkproces landt dit?</h2>
-      <p class="prompt">Sluit aan bij een bestaand ritme — daar zie je gebruik écht gebeuren.</p>
+      <div class="box-eyebrow"><span class="num">R</span> rhythm &amp; trigger</div>
+      <h2><span class="qword">in which</span> meeting or work process does this land?</h2>
+      <p class="prompt">Tie into an existing rhythm — that's where you see usage really happen.</p>
       <ul class="sub-prompts">
-        <li>Dagelijkse taken — welke?</li>
-        <li>Wekelijks / maandelijks overleg — welke?</li>
-        <li>Wat wordt nu gebruikt om te beslissen?</li>
+        <li>Daily tasks — which ones?</li>
+        <li>Weekly / monthly meetings — which ones?</li>
+        <li>What's used to decide today?</li>
       </ul>
       <div data-box="rhythm"><div class="write-area"></div></div>
       <div class="check-row" data-checks="rhythm">
-        <label data-check="aanvulling"><span class="checkbox"></span>Aanvulling</label>
-        <label data-check="vervanging"><span class="checkbox"></span>Vervanging</label>
-        <label data-check="nieuw"><span class="checkbox"></span>Nieuw</label>
+        <label data-check="aanvulling"><span class="checkbox"></span>Addition</label>
+        <label data-check="vervanging"><span class="checkbox"></span>Replacement</label>
+        <label data-check="nieuw"><span class="checkbox"></span>New</label>
       </div>
     </div>
 
     <div class="box box-userstory">
-      <div class="box-eyebrow"><span class="num">U</span> user story &amp; succes</div>
-      <h2><span class="qword">wanneer</span> ik … dan wil ik … zodat …</h2>
-      <p class="prompt">Vul aan + definieer succes vóór de bouw.</p>
+      <div class="box-eyebrow"><span class="num">U</span> user story &amp; success</div>
+      <h2><span class="qword">when</span> I … I want to … so that …</h2>
+      <p class="prompt">Complete it + define success before building.</p>
       <div data-box="userstory"><div class="write-area"></div></div>
       <div class="check-row" data-checks="userstory">
-        <label data-check="meetbaar"><span class="checkbox"></span>Impact direct meetbaar</label>
-        <label data-check="andere_initiatieven"><span class="checkbox"></span>Andere initiatieven gemarkeerd</label>
+        <label data-check="meetbaar"><span class="checkbox"></span>Impact measurable right away</label>
+        <label data-check="andere_initiatieven"><span class="checkbox"></span>Other initiatives flagged</label>
       </div>
     </div>
 
     <div class="box box-mens-zelf">
-      <div class="box-eyebrow"><span class="num">1</span> mens · gebruiker zelf</div>
-      <h2><span class="qword">wat heeft</span> de gebruiker nodig?</h2>
-      <p class="prompt">Vraag het aan de eindgebruiker zélf, niet via de Product Owner.</p>
+      <div class="box-eyebrow"><span class="num">1</span> people · the user themselves</div>
+      <h2><span class="qword">what does</span> the user need?</h2>
+      <p class="prompt">Ask the end user directly, not through the Product Owner.</p>
       <div data-box="mens_zelf"><div class="write-area"></div></div>
     </div>
 
     <div class="box box-mens-coll">
-      <div class="box-eyebrow"><span class="num">2</span> mens · collega's eromheen</div>
-      <h2><span class="qword">wat willen</span> de collega's weten?</h2>
-      <p class="prompt">Meetings, klantcontact, rapportage manager — wie kijkt mee?</p>
+      <div class="box-eyebrow"><span class="num">2</span> people · colleagues around them</div>
+      <h2><span class="qword">what do</span> the colleagues want to know?</h2>
+      <p class="prompt">Meetings, client contact, manager reporting — who's looking on?</p>
       <div data-box="mens_coll"><div class="write-area"></div></div>
     </div>
 
     <div class="box box-proces-now">
-      <div class="box-eyebrow"><span class="num">3</span> proces · beslissingen</div>
-      <h2><span class="qword">welke</span> taken &amp; beslissingen ondersteunt dit?</h2>
-      <p class="prompt">Concreet: welk moment in de week wordt nu beter?</p>
+      <div class="box-eyebrow"><span class="num">3</span> process · decisions</div>
+      <h2><span class="qword">which</span> tasks &amp; decisions does this support?</h2>
+      <p class="prompt">Concretely: which moment in the week gets better?</p>
       <div data-box="proces"><div class="write-area"></div></div>
     </div>
 
     <div class="box box-proces-fit">
-      <div class="box-eyebrow"><span class="num warn">!</span> belangrijke vragen aan de gebruiker</div>
-      <h2><span class="qword">hoe</span> ga je dit gebruiken?</h2>
+      <div class="box-eyebrow"><span class="num warn">!</span> key questions for the user</div>
+      <h2><span class="qword">how</span> are you going to use this?</h2>
       <ul class="sub-prompts">
-        <li>Alleen voor jou nodig — of óók voor anderen?</li>
-        <li>Realistisch: hoeveel tijd per week ga je dit echt gebruiken?</li>
-        <li>Hoe moet het eindresultaat absoluut <em>niet</em> eruitzien?</li>
+        <li>Only needed by you — or by others too?</li>
+        <li>Realistically: how much time per week will you actually use this?</li>
+        <li>How should the end result absolutely <em>not</em> look?</li>
       </ul>
       <div data-box="vragen"><div class="write-area"></div></div>
     </div>
@@ -631,7 +630,7 @@
 </section>
 
 <!-- ============================================
-     SHEET 2 — VERTAAL
+     SHEET 2 — TRANSLATE
      ============================================ -->
 <section class="sheet sheet-2">
   <header class="header">
@@ -639,57 +638,57 @@
       <img src="assets/logo-full.png" alt="">
       <div class="titles">
         <span class="name">Datawijs met Thijs</span>
-        <span class="role">BVBV Canvas · Vertaal</span>
+        <span class="role">BVBV Canvas · Translate</span>
       </div>
     </div>
     <div class="sheet-title">
-      <span class="phase-num">fase 2 · vertaal</span>
-      <h1>Van vraag naar <em>kwantitatief</em> antwoord.</h1>
+      <span class="phase-num">phase 2 · translate</span>
+      <h1>From question to <em>quantitative</em> answer.</h1>
     </div>
     <div class="sheet-meta">
       <div class="pageno">02</div>
-      <span class="pill">vertaal</span>
+      <span class="pill">translate</span>
     </div>
   </header>
 
   <div class="project-strip">
     <div class="field">
-      <span class="field-label">Project / dataproduct</span>
+      <span class="field-label">Project / data product</span>
       <span class="field-value" data-meta="project"></span>
     </div>
     <div class="field">
-      <span class="field-label">Eindgebruiker (rol &amp; naam)</span>
+      <span class="field-label">End user (role &amp; name)</span>
       <span class="field-value" data-meta="user_2"></span>
     </div>
     <div class="field">
-      <span class="field-label">Datum gesprek</span>
+      <span class="field-label">Conversation date</span>
       <span class="field-value" data-meta="date_2"></span>
     </div>
     <div class="field">
-      <span class="field-label">Vel</span>
-      <span class="field-value bare"><strong>2 / 3</strong> · Vertaal</span>
+      <span class="field-label">Sheet</span>
+      <span class="field-value bare"><strong>2 / 3</strong> · Translate</span>
     </div>
   </div>
 
   <div class="grid">
     <div class="box">
-      <div class="box-eyebrow"><span class="num">Q</span> welke vragen?</div>
-      <h2><span class="qword">welke vragen</span> moet het product beantwoorden?</h2>
-      <p class="prompt">Voorbeeld: welke producten dragen het minst bij aan de winst?</p>
+      <div class="box-eyebrow"><span class="num">Q</span> which questions?</div>
+      <h2><span class="qword">which questions</span> must the product answer?</h2>
+      <p class="prompt">Example: which products contribute least to profit?</p>
       <ol class="qai-list" data-qai="q"></ol>
       <div class="qai-write"></div>
     </div>
     <div class="box">
-      <div class="box-eyebrow"><span class="num">A</span> welk kwantitatief resultaat?</div>
-      <h2><span class="qword">welk</span> meetbaar antwoord levert het op?</h2>
-      <p class="prompt">Vertaal elke vraag naar één meetbaar getal of trend.</p>
+      <div class="box-eyebrow"><span class="num">A</span> which quantitative result?</div>
+      <h2><span class="qword">what</span> measurable answer does it produce?</h2>
+      <p class="prompt">Translate each question into one measurable number or trend.</p>
       <ol class="qai-list" data-qai="a"></ol>
       <div class="qai-write"></div>
     </div>
     <div class="box">
-      <div class="box-eyebrow"><span class="num">I</span> welke input is er nodig?</div>
-      <h2><span class="qword">welke</span> data, bron, periode?</h2>
-      <p class="prompt">Per rij: welke inputs zijn nodig om tot dat antwoord te komen?</p>
+      <div class="box-eyebrow"><span class="num">I</span> which input is needed?</div>
+      <h2><span class="qword">which</span> data, source, period?</h2>
+      <p class="prompt">Per row: which inputs are needed to reach that answer?</p>
       <ol class="qai-list" data-qai="i"></ol>
       <div class="qai-write"></div>
     </div>
@@ -697,7 +696,7 @@
 </section>
 
 <!-- ============================================
-     SHEET 3 — BOUW & VERANKER
+     SHEET 3 — BUILD & EMBED
      ============================================ -->
 <section class="sheet sheet-3">
   <header class="header">
@@ -705,74 +704,74 @@
       <img src="assets/logo-full.png" alt="">
       <div class="titles">
         <span class="name">Datawijs met Thijs</span>
-        <span class="role">BVBV Canvas · Bouw &amp; Veranker</span>
+        <span class="role">BVBV Canvas · Build &amp; Embed</span>
       </div>
     </div>
     <div class="sheet-title">
-      <span class="phase-num">fase 3 + 4 · bouw &amp; veranker</span>
-      <h1>Wat is <em>haalbaar</em>, en hoe komt het beschikbaar?</h1>
+      <span class="phase-num">phase 3 + 4 · build &amp; embed</span>
+      <h1>What's <em>feasible</em>, and how does it become available?</h1>
     </div>
     <div class="sheet-meta">
       <div class="pageno">03</div>
-      <span class="pill">bouw + veranker</span>
+      <span class="pill">build + embed</span>
     </div>
   </header>
 
   <div class="project-strip">
     <div class="field">
-      <span class="field-label">Project / dataproduct</span>
+      <span class="field-label">Project / data product</span>
       <span class="field-value" data-meta="project"></span>
     </div>
     <div class="field">
-      <span class="field-label">Eigenaar / opdrachtgever</span>
+      <span class="field-label">Owner / sponsor</span>
       <span class="field-value" data-meta="owner"></span>
     </div>
     <div class="field">
-      <span class="field-label">Datum check</span>
+      <span class="field-label">Check-in date</span>
       <span class="field-value" data-meta="date_3"></span>
     </div>
     <div class="field">
-      <span class="field-label">Vel</span>
-      <span class="field-value bare"><strong>3 / 3</strong> · Bouw + Veranker</span>
+      <span class="field-label">Sheet</span>
+      <span class="field-value bare"><strong>3 / 3</strong> · Build + Embed</span>
     </div>
   </div>
 
   <div class="grid">
     <div class="box box-cap">
-      <div class="box-eyebrow"><span class="num">H1</span> haalbaarheid · capaciteit</div>
-      <h2><span class="qword">hebben</span> we genoeg mensen &amp; kennis?</h2>
-      <p class="prompt">Datateam én domeinexperts — niet alleen data.</p>
+      <div class="box-eyebrow"><span class="num">F1</span> feasibility · capacity</div>
+      <h2><span class="qword">do we</span> have enough people &amp; know-how?</h2>
+      <p class="prompt">Data team and domain experts — not just data.</p>
       <div data-box="h1"><div class="write-area"></div></div>
     </div>
     <div class="box box-data">
-      <div class="box-eyebrow"><span class="num">H2</span> haalbaarheid · data</div>
-      <h2><span class="qword">is de</span> data er, en bruikbaar?</h2>
-      <p class="prompt">Bruikbaar = vindbaar, juist, met toegang voor wie het nodig heeft.</p>
+      <div class="box-eyebrow"><span class="num">F2</span> feasibility · data</div>
+      <h2><span class="qword">is the</span> data there, and usable?</h2>
+      <p class="prompt">Usable = findable, correct, with access for whoever needs it.</p>
       <div data-box="h2"><div class="write-area"></div></div>
     </div>
     <div class="box box-rules">
-      <div class="box-eyebrow"><span class="num">H3</span> haalbaarheid · regels</div>
-      <h2><span class="qword">welke</span> regels en beperkingen?</h2>
-      <p class="prompt">Regelgeving, beveiliging, tooling — pionieren toegestaan?</p>
+      <div class="box-eyebrow"><span class="num">F3</span> feasibility · rules</div>
+      <h2><span class="qword">which</span> rules and constraints?</h2>
+      <p class="prompt">Regulation, security, tooling — is pioneering allowed?</p>
       <div data-box="h3"><div class="write-area"></div></div>
     </div>
     <div class="box box-success">
-      <div class="box-eyebrow"><span class="num">H4</span> haalbaarheid · succes meten</div>
-      <h2><span class="qword">hoe</span> bepalen we wat succes is?</h2>
-      <p class="prompt">Sluit terug aan op de succescriteria uit fase Vertaal.</p>
+      <div class="box-eyebrow"><span class="num">F4</span> feasibility · measuring success</div>
+      <h2><span class="qword">how</span> do we define what success is?</h2>
+      <p class="prompt">Tie back to the success criteria from the Translate phase.</p>
       <div data-box="h4"><div class="write-area"></div></div>
     </div>
 
     <div class="box box-vorm">
-      <div class="box-eyebrow"><span class="num">V</span> vorm &amp; weergave</div>
-      <h2><span class="qword">welke</span> oplossing leveren we op?</h2>
-      <p class="prompt">Wat is de beste vorm voor déze gebruiker?</p>
+      <div class="box-eyebrow"><span class="num">V</span> form &amp; presentation</div>
+      <h2><span class="qword">which</span> solution do we deliver?</h2>
+      <p class="prompt">What's the best form for this particular user?</p>
       <div class="tag-row" data-tags="vorm">
         <span class="tag" data-tag="Dashboard">Dashboard</span>
         <span class="tag" data-tag="Database">Database</span>
-        <span class="tag" data-tag="Datamodel">Datamodel</span>
+        <span class="tag" data-tag="Datamodel">Data model</span>
         <span class="tag" data-tag="Index">Index</span>
-        <span class="tag" data-tag="Algoritme">Algoritme</span>
+        <span class="tag" data-tag="Algoritme">Algorithm</span>
         <span class="tag" data-tag="Simulator">Simulator</span>
         <span class="tag" data-tag="Website">Website</span>
         <span class="tag" data-tag="Infographic">Infographic</span>
@@ -782,28 +781,28 @@
     </div>
     <div class="box box-medium">
       <div class="box-eyebrow"><span class="num">M</span> medium</div>
-      <h2><span class="qword">waar</span> komt het beschikbaar?</h2>
-      <p class="prompt">Standaard rapportageplek — of een aparte plek?</p>
+      <h2><span class="qword">where</span> does it become available?</h2>
+      <p class="prompt">Standard reporting spot — or a separate place?</p>
       <div class="tag-row" data-tags="medium">
-        <span class="tag" data-tag="Bestaande BI">Bestaande BI</span>
+        <span class="tag" data-tag="Bestaande BI">Existing BI</span>
         <span class="tag" data-tag="SharePoint">SharePoint</span>
-        <span class="tag" data-tag="Eigen site">Eigen site</span>
-        <span class="tag" data-tag="Scherm op werkvloer">Scherm op werkvloer</span>
-        <span class="tag" data-tag="E-mail">E-mail</span>
+        <span class="tag" data-tag="Eigen site">Own site</span>
+        <span class="tag" data-tag="Scherm op werkvloer">Screen on the floor</span>
+        <span class="tag" data-tag="E-mail">Email</span>
       </div>
       <div data-box="medium"><div class="write-area"></div></div>
     </div>
     <div class="box box-borg">
-      <div class="box-eyebrow"><span class="num ink">★</span> borging — verankerd in je werkweek</div>
-      <h2><span class="qword">hoe</span> zorgen we dat het écht in het proces landt?</h2>
-      <p class="prompt">Eigenaarschap, demo, training, documentatie, onderhoud — wie doet wat, wanneer?</p>
+      <div class="box-eyebrow"><span class="num ink">★</span> embedding — anchored in your work week</div>
+      <h2><span class="qword">how</span> do we make sure it really lands in the process?</h2>
+      <p class="prompt">Ownership, demo, training, documentation, maintenance — who does what, and when?</p>
       <div class="check-row" data-checks="borg" style="margin: 0 0 2mm; padding-top: 0;">
         <label data-check="demo"><span class="checkbox"></span>Demo</label>
         <label data-check="training"><span class="checkbox"></span>Training</label>
-        <label data-check="documentatie"><span class="checkbox"></span>Documentatie</label>
-        <label data-check="eigenaarschap"><span class="checkbox"></span>Eigenaarschap</label>
-        <label data-check="onderhoud"><span class="checkbox"></span>Onderhoud</label>
-        <label data-check="feedback"><span class="checkbox"></span>Feedback­ronde</label>
+        <label data-check="documentatie"><span class="checkbox"></span>Documentation</label>
+        <label data-check="eigenaarschap"><span class="checkbox"></span>Ownership</label>
+        <label data-check="onderhoud"><span class="checkbox"></span>Maintenance</label>
+        <label data-check="feedback"><span class="checkbox"></span>Feedback round</label>
       </div>
       <div data-box="borg"><div class="write-area"></div></div>
     </div>
@@ -811,16 +810,16 @@
 
   <!-- Optional actions panel — populated only when JSON has data.actions -->
   <div class="actions-panel" hidden>
-    <h3><span class="star">★</span><span class="title">Concreet — wat valideren we?</span></h3>
+    <h3><span class="star">★</span><span class="title">Concretely — what do we validate?</span></h3>
     <div class="actions-grid">
       <div>
-        <strong>Open vragen:</strong>
+        <strong>Open questions:</strong>
         <ol data-actions="questions"></ol>
       </div>
       <div>
-        <strong>Mockup &amp; demo-materiaal:</strong>
+        <strong>Mockup &amp; demo material:</strong>
         <ul data-actions="materials"></ul>
-        <strong style="margin-top: 2mm;">Beslissingen die we willen vastleggen:</strong>
+        <strong style="margin-top: 2mm;">Decisions we want to capture:</strong>
         <ul data-actions="decisions"></ul>
       </div>
     </div>
