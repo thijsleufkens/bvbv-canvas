@@ -1,9 +1,10 @@
 # macOS
 .DS_Store
 
-# Klantdata — alle project-JSONs blijven lokaal, behalve het lege template
+# Klantdata — alle project-JSONs blijven lokaal, behalve de lege templates
 projects/*.json
 !projects/template.json
+!projects/template-en.json
 
 # Standalone gevulde varianten met klantdata
 BVBV\ Canvas\ -\ *.html

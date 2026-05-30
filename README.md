@@ -2,7 +2,9 @@
 
 Een 3-vels A4-werkcanvas voor het **Datawijs met Thijs**-framework: **Begrijp · Vertaal · Bouw + Veranker**. Print het uit en pak een pen, of vul het in op het scherm — projectinhoud wordt los van de template als JSON opgeslagen, dus klantdata mengt niet met code.
 
-🌐 **Live demo:** [BVBV Canvas met leeg template](https://thijsleufkens.github.io/bvbv-canvas/BVBV%20Canvas.html?project=projects/template.json)
+🌐 **Live demo:** [BVBV Canvas met leeg template](https://thijsleufkens.github.io/bvbv-canvas/BVBV%20Canvas.html?project=projects/template.json) · [English version](https://thijsleufkens.github.io/bvbv-canvas/BVBV%20Canvas%20EN.html?project=projects/template-en.json)
+
+> 🇬🇧 **English version:** `BVBV Canvas EN.html` is a full English translation of the canvas (Understand · Translate · Build + Embed). It shares the same `assets/canvas.js` and JSON shape, so a project file works in either language — open it with `?project=projects/template-en.json`.
 
 ## Waar het voor dient
 

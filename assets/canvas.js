@@ -6,6 +6,50 @@
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
   const html = (v) => Array.isArray(v) ? v.join('\n') : (v || '');
 
+  // ---------- i18n ----------
+  // The UI is Dutch by default; an English variant ("BVBV Canvas EN.html")
+  // sets <html lang="en"> and gets the English strings. Console messages stay
+  // Dutch (developer-facing only); everything the user can see is localised.
+  const LANG = (document.documentElement.lang || 'nl').toLowerCase().startsWith('en') ? 'en' : 'nl';
+  const I18N = {
+    nl: {
+      edit: 'Bewerk',
+      editDone: 'Klaar met bewerken',
+      hideBlock: 'Verberg blok',
+      showBlock: 'Toon blok',
+      hideToggleTitle: 'Verberg/toon dit blok',
+      clearConfirm: 'Wis huidige inhoud en herstart met leeg canvas?',
+      readError: 'Kon JSON niet lezen: ',
+      downloads: 'Downloads',
+      pickDirFailed: (m) => `Map kiezen mislukt: ${m}`,
+      writeDirFailed: (m) => `Schrijven naar map mislukt: ${m} — val terug op opslag-dialoog`,
+      saveFailed: (m) => `Opslaan mislukt: ${m} — val terug op download`,
+      saveFallback: (reason) => `Save valt terug op Downloads — ${reason}`,
+      reasonFile: 'open via http://localhost om silent save te enablen',
+      reasonNoApi: 'browser ondersteunt geen File System Access API',
+    },
+    en: {
+      edit: 'Edit',
+      editDone: 'Done editing',
+      hideBlock: 'Hide block',
+      showBlock: 'Show block',
+      hideToggleTitle: 'Hide/show this block',
+      clearConfirm: 'Clear the current content and start over with an empty canvas?',
+      readError: 'Could not read JSON: ',
+      downloads: 'Downloads',
+      pickDirFailed: (m) => `Could not pick folder: ${m}`,
+      writeDirFailed: (m) => `Writing to folder failed: ${m} — falling back to the save dialog`,
+      saveFailed: (m) => `Save failed: ${m} — falling back to download`,
+      saveFallback: (reason) => `Save falls back to Downloads — ${reason}`,
+      reasonFile: 'open via http://localhost to enable silent save',
+      reasonNoApi: 'browser does not support the File System Access API',
+    },
+  };
+  const t = (key, ...args) => {
+    const v = (I18N[LANG] || I18N.nl)[key];
+    return typeof v === 'function' ? v(...args) : v;
+  };
+
   const STORAGE_KEY = 'bvbv-canvas-draft';
   const IDB_NAME = 'bvbv-canvas';
   const IDB_STORE = 'handles';
@@ -85,7 +129,7 @@
     } catch (e) {
       if (e.name !== 'AbortError') {
         console.warn('showDirectoryPicker failed:', e);
-        flashStatus(`Map kiezen mislukt: ${e.message}`, 'error');
+        flashStatus(t('pickDirFailed', e.message), 'error');
       }
       return null;
     }
@@ -278,7 +322,7 @@
           btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'box-hide-toggle screen-only';
-          btn.title = 'Verberg/toon dit blok';
+          btn.title = t('hideToggleTitle');
           btn.addEventListener('click', onBoxHideClick);
           box.appendChild(btn);
         }
@@ -289,11 +333,11 @@
     });
 
     const editBtn = $('#btn-edit');
-    if (editBtn) editBtn.textContent = on ? 'Klaar met bewerken' : 'Bewerk';
+    if (editBtn) editBtn.textContent = on ? t('editDone') : t('edit');
   }
 
   function updateHideBtnLabel(btn, box) {
-    btn.textContent = box.classList.contains('is-hidden') ? 'Toon blok' : 'Verberg blok';
+    btn.textContent = box.classList.contains('is-hidden') ? t('showBlock') : t('hideBlock');
   }
 
   function onBoxHideClick(e) {
@@ -477,7 +521,7 @@
           return;
         } catch (e) {
           console.warn('Schrijven naar projects/ map mislukt:', e);
-          flashStatus(`Schrijven naar map mislukt: ${e.message} — val terug op opslag-dialoog`, 'error');
+          flashStatus(t('writeDirFailed', e.message), 'error');
           // fall through to per-file picker
         }
       }
@@ -503,7 +547,7 @@
       } catch (e) {
         if (e.name === 'AbortError') return;
         console.warn('showSaveFilePicker failed:', e);
-        flashStatus(`Opslaan mislukt: ${e.message} — val terug op download`, 'error');
+        flashStatus(t('saveFailed', e.message), 'error');
       }
     }
 
@@ -515,7 +559,7 @@
     a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
-    flashSaved(`↓ ${fileName} (Downloads)`);
+    flashSaved(`↓ ${fileName} (${t('downloads')})`);
   }
 
   async function forgetProjectsDir() {
@@ -575,7 +619,7 @@
         clearRendered();
         render(data);
       } catch (err) {
-        alert('Kon JSON niet lezen: ' + err.message);
+        alert(t('readError') + err.message);
       }
     };
     reader.readAsText(file);
@@ -583,7 +627,7 @@
   }
 
   function clearDraft() {
-    if (!confirm('Wis huidige inhoud en herstart met leeg canvas?')) return;
+    if (!confirm(t('clearConfirm'))) return;
     localStorage.removeItem(STORAGE_KEY);
     currentFileHandle = null;
     currentProjectFileName = null;
@@ -613,9 +657,9 @@
     const apiAvailable = !!window.showSaveFilePicker;
     if (!apiAvailable) {
       const reason = location.protocol === 'file:'
-        ? 'open via http://localhost om silent save te enablen'
-        : 'browser ondersteunt geen File System Access API';
-      flashStatus(`Save valt terug op Downloads — ${reason}`, 'info');
+        ? t('reasonFile')
+        : t('reasonNoApi');
+      flashStatus(t('saveFallback', reason), 'info');
       console.warn('[bvbv] File System Access API niet beschikbaar:', {
         protocol: location.protocol,
         showSaveFilePicker: !!window.showSaveFilePicker,
