@@ -83,6 +83,7 @@ When filled content overflows the default A4 landscape height, set `"settings": 
 
 - **Language**: the Dutch canvas (`BVBV Canvas.html`, `lang="nl"`) is the primary UI. An English variant (`BVBV Canvas EN.html`, `lang="en"`) mirrors it word-for-word. Both load the *same* `assets/canvas.js`, which localises its user-facing strings off `document.documentElement.lang` via the `I18N`/`t()` block at the top of the IIFE (`nl` default, `en`; console messages stay Dutch). The two HTML files are structurally identical — same `data-*` keys, same boxes/checks/tags — so a project JSON renders in either language; only visible copy differs. When you add a fillable region or a JS-emitted user-facing string, update *both* HTML files and *both* `I18N` dictionaries.
 - **No frameworks**: keep `canvas.js` vanilla. No bundler, no transpile step.
+- **Cache-busting**: both HTML files load `assets/canvas.js?v=N`. GitHub Pages caches assets (~10 min) and browsers cache harder, so after changing `canvas.js` bump `N` in *both* HTML files — otherwise users keep running the stale script even after a deploy.
 - **Print-first**: when changing CSS, verify both screen and `Cmd+P` preview before reporting done. Anything that should only show on screen needs `@media print { display: none }` or a `.screen-only` class.
 - **Client data stays out of git**: `projects/*.json` is `.gitignore`d except for `template.json` and `template-en.json`. Standalone hardcoded `BVBV Canvas - *.html` files are also ignored. If you generate a per-client variant for testing, keep it local.
 
