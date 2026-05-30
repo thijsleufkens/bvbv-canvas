@@ -742,6 +742,17 @@
     const printBtn = $('#btn-print');
     if (printBtn) printBtn.addEventListener('click', () => window.print());
 
+    // Language toggle — jump to the other-language canvas in the same folder,
+    // carrying the current ?project= file across (the JSON renders in either).
+    const langBtn = $('#btn-lang');
+    if (langBtn) {
+      const dir = decodeURIComponent(location.pathname).replace(/[^/]*$/, '');
+      const targetFile = LANG === 'en' ? 'BVBV Canvas.html' : 'BVBV Canvas EN.html';
+      langBtn.addEventListener('click', () => {
+        location.href = dir + targetFile + location.search;
+      });
+    }
+
     $$('[data-check]').forEach(l => l.addEventListener('click', onCheckClick));
     $$('[data-tag]').forEach(t => t.addEventListener('click', onTagClick));
 
