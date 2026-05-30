@@ -19,6 +19,7 @@
       showBlock: 'Toon blok',
       hideToggleTitle: 'Verberg/toon dit blok',
       clearConfirm: 'Wis huidige inhoud en herstart met leeg canvas?',
+      langUnsaved: 'Je hebt niet-opgeslagen wijzigingen. Wisselen van taal gooit ze weg. Toch doorgaan?',
       readError: 'Kon JSON niet lezen: ',
       downloads: 'Downloads',
       pickDirFailed: (m) => `Map kiezen mislukt: ${m}`,
@@ -35,6 +36,7 @@
       showBlock: 'Show block',
       hideToggleTitle: 'Hide/show this block',
       clearConfirm: 'Clear the current content and start over with an empty canvas?',
+      langUnsaved: 'You have unsaved changes. Switching language will discard them. Continue anyway?',
       readError: 'Could not read JSON: ',
       downloads: 'Downloads',
       pickDirFailed: (m) => `Could not pick folder: ${m}`,
@@ -55,6 +57,7 @@
   const IDB_STORE = 'handles';
   const IDB_KEY_DIR = 'projectsDir';
   let editMode = false;
+  let dirty = false;                // unsaved edits since the last save/load
   let currentFileHandle = null;     // FileSystemFileHandle (one specific JSON file)
   let projectsDirHandle = null;     // FileSystemDirectoryHandle (the projects/ folder)
   let currentProjectFileName = null; // e.g. 'evoke.json' — preserved across save
@@ -483,6 +486,7 @@
   // ---------- SAVE / LOAD ----------
   function autosave() {
     if (!editMode) return;
+    dirty = true;
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(collect())); }
     catch (_) { /* quota — ignore */ }
   }
@@ -569,6 +573,7 @@
   }
 
   function flashSaved(name) {
+    dirty = false;
     flashStatus(`✓ ${name}`, 'ok');
   }
 
@@ -749,6 +754,7 @@
       const dir = decodeURIComponent(location.pathname).replace(/[^/]*$/, '');
       const targetFile = LANG === 'en' ? 'BVBV Canvas.html' : 'BVBV Canvas EN.html';
       langBtn.addEventListener('click', () => {
+        if (dirty && !confirm(t('langUnsaved'))) return;
         location.href = dir + targetFile + location.search;
       });
     }
