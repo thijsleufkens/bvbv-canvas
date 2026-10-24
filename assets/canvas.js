@@ -23,9 +23,9 @@
       readError: 'Kon JSON niet lezen: ',
       downloads: 'Downloads',
       pickDirFailed: (m) => `Map kiezen mislukt: ${m}`,
-      writeDirFailed: (m) => `Schrijven naar map mislukt: ${m} — val terug op opslag-dialoog`,
-      saveFailed: (m) => `Opslaan mislukt: ${m} — val terug op download`,
-      saveFallback: (reason) => `Save valt terug op Downloads — ${reason}`,
+      writeDirFailed: (m) => `Schrijven naar map mislukt: ${m}, val terug op opslag-dialoog`,
+      saveFailed: (m) => `Opslaan mislukt: ${m}, val terug op download`,
+      saveFallback: (reason) => `Save valt terug op Downloads, ${reason}`,
       reasonFile: 'open via http://localhost om silent save te enablen',
       reasonNoApi: 'browser ondersteunt geen File System Access API',
     },
@@ -60,7 +60,7 @@
   let dirty = false;                // unsaved edits since the last save/load
   let currentFileHandle = null;     // FileSystemFileHandle (one specific JSON file)
   let projectsDirHandle = null;     // FileSystemDirectoryHandle (the projects/ folder)
-  let currentProjectFileName = null; // e.g. 'evoke.json' — preserved across save
+  let currentProjectFileName = null; // e.g. 'project-x.json', preserved across save
 
   // ---------- IndexedDB (for persisting directory handle) ----------
   function openIDB() {
